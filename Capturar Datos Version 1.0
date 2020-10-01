@@ -1,0 +1,99 @@
+using System;
+using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Xml.Linq;
+
+namespace V1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+                foreach (string value in args)
+                {
+                    
+                    string p = Convert.ToString(args[i]);
+                    string nombre, apellido, edad, cedula;
+                    bool B1 = false;
+                    bool B2 = false;
+                    string Opcion = "a";
+
+                    if (File.Exists(p) == true)
+                    {
+                    }
+
+                    do
+                    {
+                        Console.WriteLine("Digite los siguientes datos requeridos");
+                        Console.Write("Cédula: ");
+                        cedula = Console.ReadLine();
+                        Console.Write("Nombre: ");
+                        nombre = Console.ReadLine();
+                        Console.Write("Apellido: ");
+                        apellido = Console.ReadLine();
+                        Console.Write("Edad: ");
+                        edad = Console.ReadLine();
+                        while (B2 == false)
+                        {
+                            Console.WriteLine("¿Está seguro que desea guardar estos datos?");
+                            Console.Write("Guardar(G), Descartar(D), Salir(S): ");
+                            Opcion = Console.ReadLine().ToUpper();
+                            if (Opcion == "G" || Opcion == "D" || Opcion == "S")
+                            {
+                                B2 = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Introduzca un valor válido.");
+                                B2 = false;
+                            }
+                            switch (Opcion)
+                            {
+                                case "G":
+                                    Datos(cedula, nombre, apellido, edad, p);
+                                    Console.WriteLine("Sus datos fueron guardado");
+                                    B1 = true;
+                                    break;
+                                case "D":
+                                    B1 = false;
+                                    B2 = false;
+                                    Console.WriteLine();
+                                    break;
+                                case "S":
+                                    Environment.Exit(0);
+                                    break;
+
+                            }
+                        }
+                    } while (B1 == false);
+                }
+         }
+        public static void Datos(string cedula, string nombre, string apellido, string edad, string filepath)
+        {
+            try
+            {
+                if (!Directory.Exists(@filepath))
+                {
+                    using (StreamWriter writer = new StreamWriter(new FileStream(@filepath, FileMode.Append, FileAccess.Write)))
+                    {
+                        writer.WriteLine(cedula + "," + nombre + "," + apellido + "," + edad);
+                    }
+                }
+                else
+                {
+                    using (StreamWriter writer = new StreamWriter(new FileStream(@filepath, FileMode.Create, FileAccess.Write)))
+                    {
+                        writer.WriteLine(cedula + "," + nombre + "," + apellido + "," + edad);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Error: " + ex);
+                Environment.Exit(0);
+            }
+        }
+    }
+}
