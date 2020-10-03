@@ -1,0 +1,651 @@
+using System;
+using System.IO;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Xml.Linq;
+using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using System.Transactions;
+
+namespace CapturaDatos
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            bool bo = false;
+            for (int i = 0; i < args.Length; i++)
+                foreach (string value in args)
+                    do
+            {
+                bool bb = false;
+                string Opcion2 = "a";
+                string p = Convert.ToString(args[i]);
+                Console.WriteLine("Eliga la opción deseada");
+                Console.WriteLine("------------------------");
+                Console.WriteLine("[1]. Capturar");
+                Console.WriteLine("[2]. Lista");
+                Console.WriteLine("[3]. Buscar");
+                Console.WriteLine("[4]. Editar");
+                Console.WriteLine("[5]. Eliminar");
+                Console.WriteLine("[6]. Salir");
+                Console.WriteLine("------------------------");
+                while (bb == false)
+                {
+                    Opcion2 = Console.ReadLine().ToUpper();
+                    if (Opcion2 == "1" || Opcion2 == "2" || Opcion2 == "3" || Opcion2 == "4" || Opcion2 == "5" || Opcion2 == "6")
+                    {
+                        bb = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Introduzca un valor válido.");
+                        Console.WriteLine();
+                        bb = false;
+                    }
+                }
+                switch (Opcion2)
+                {
+                    case "1":
+                        bool B1 = false;
+                        bool B2 = false;
+                        bool B4 = false;
+                        string cedula, nombre, apellido, edad, ahorros, password;
+                        string Opcion = "a";
+                        bool B3 = false;
+
+                        do
+                        {
+                            Console.WriteLine("Digite los siguientes datos requeridos");
+                            Console.Write("Cédula: ");
+                            cedula = ValidateInt();
+                            Console.Write("Nombre: ");
+                            nombre = Console.ReadLine();
+                            Console.Write("Apellido: ");
+                            apellido = Console.ReadLine();
+                            Console.Write("Edad: ");
+                            edad = ValidateInt();
+                            Console.Write("Ahorros: ");
+                            ahorros = VerificaAhorros();
+                            Console.Write("Contraseña: ");
+                            password = VerificaPassword();
+
+                            do
+                            {
+                                while (B2 == false)
+                                {
+                                    Console.WriteLine("¿Está seguro que desea guardar estos datos?");
+                                    Console.Write("Guardar(G), Descartar(D), Salir(S): ");
+                                    Opcion = Console.ReadLine().ToUpper();
+                                    if (Opcion == "G" || Opcion == "D" || Opcion == "S")
+                                    {
+                                        B2 = true;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Introduzca un valor válido.");
+                                        B2 = false;
+                                    }
+                                }
+                                switch (Opcion)
+                                {
+                                    case "G":
+                                        if (Directory.Exists(p))
+                                        {
+                                            if (validar(Convert.ToString(cedula), p) == false)
+                                            {
+                                                Datos(cedula, nombre, apellido, edad, ahorros, password, p);
+                                                Console.WriteLine("Guardado satisfactoriamente.");
+                                                B1 = true;
+                                                B2 = false;
+                                                Opcion = "";
+                                                do
+                                                {
+                                                    Console.WriteLine("¿Desea capturar otro dato? (S/N)");
+                                                    Opcion = Console.ReadLine().ToUpper();
+                                                    if (Opcion == "S" || Opcion == "N")
+                                                    {
+                                                        B4 = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine("Introduzca un valor válido.");
+                                                    }
+                                                }
+                                                while (B4 == false);
+                                                switch (Opcion)
+                                                {
+                                                    case "S":
+                                                        B1 = true;
+                                                        B2 = false;
+                                                        B4 = false;
+                                                        Console.WriteLine();
+                                                        break;
+
+                                                    case "N":
+                                                        B3 = true;
+                                                        B1 = true;
+                                                        B2 = true;
+                                                        B4 = false;
+                                                        break;
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Numero de cédula guardado");
+                                                B1 = true;
+                                                B2 = false;
+                                                B4 = false;
+                                                Console.WriteLine();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Datos(cedula, nombre, apellido, edad, ahorros, password, p);
+                                            Console.WriteLine("Sus datos fueron guardados.");
+                                            B1 = true;
+                                            B2 = false;
+                                            B4 = false;
+                                            Opcion = "";
+                                            do
+                                            {
+                                                Console.WriteLine("¿Desea capturar otro dato? (S/N)");
+                                                Opcion = Console.ReadLine().ToUpper();
+                                                if (Opcion == "S" || Opcion == "N")
+                                                {
+                                                    B4 = true;
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("Digite un valor correcto");
+                                                }
+                                            }
+                                            while (B4 == false);
+                                            switch (Opcion)
+                                            {
+                                                case "S":
+                                                    B1 = true;
+                                                    B2 = false;
+                                                    B4 = false;
+                                                    Console.WriteLine();
+                                                    break;
+
+                                                case "N":
+                                                    B3 = true;
+                                                    B1 = true;
+                                                    B2 = true;
+                                                    B4 = false;
+                                                    break;
+                                            }
+                                        }
+
+                                        break;
+                                    case "D":
+                                        B1 = true;
+                                        B2 = false;
+                                        B4 = false;
+                                        Console.WriteLine();
+                                        break;
+                                    case "S":
+                                        B3 = true;
+                                        B1 = true;
+                                        B2 = true;
+                                        B4 = false;
+                                        break;
+                                }
+
+                            }
+                            while (B1 == false);
+                        }
+                        while (B3 == false);
+                        Console.WriteLine();
+                        break;
+
+
+                    case "2":
+                        if (!Directory.Exists(p))
+                        {
+                            string[] data = load(p);
+                            Console.WriteLine("Datos: Cédula, Nombre, Apellido, Edad.");
+                            foreach (string line in data)
+                            {
+                                Console.WriteLine(line);
+                            }
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("Archivo no existe");
+                        }
+                        Console.WriteLine();
+                        break;
+
+
+                    case "3":
+                        Console.WriteLine("Digite un numero de cedula");
+                        string param = Console.ReadLine();
+                        string checker = "";
+                        if (!Directory.Exists(p))
+                        {
+                            string[] data = load(p);
+
+                            foreach (string line in data)
+                            {
+                                string[] term = line.Split(',');
+                                if (term[0] == param)
+                                {
+                                    checker = term[0];
+                                    Console.WriteLine("Datos: Cédula, Nombre, Apellido, Edad.");
+                                    Console.WriteLine(line);
+                                }
+                            }
+                            if (checker != param)
+                            {
+                                Console.WriteLine("Numero de cédula no existe");
+                            }
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("Archivo no existe");
+                        }
+                        Console.WriteLine();
+                        break;
+
+
+                    case "4":
+                        Console.WriteLine("Introduzca un numero de cédula");
+                        bool t = false;
+                        B2 = false;
+                        Opcion = "a";
+                        string temp = "temp.txt";
+                        param = Console.ReadLine();
+                        if (!Directory.Exists(p))
+                        {
+                            if (validar(param, p) == true)
+                            {
+                                string[] data = load(p);
+                                foreach (string line in data)
+                                {
+                                    string[] term = line.Split(',');
+                                    if (!(term[0] == param))
+                                    {
+
+                                        Datos(term[0], term[1], term[2], term[3], term[4], term[5], @temp);
+                                    }
+                                    else
+                                    {
+                                        do
+                                        {
+                                            Console.WriteLine("Cédula actual: " + term[0]);
+                                            Console.Write("Nueva cédula: ");
+                                            string vCedula = Console.ReadLine();
+                                            Console.WriteLine("Nombre actual: " + term[1]);
+                                            Console.Write("Nuevo nombre: ");
+                                            string vNombre = Console.ReadLine();
+                                            Console.WriteLine("Apellido actual: " + term[2]);
+                                            Console.Write("Nuevo Apellido: ");
+                                            string vApellido = Console.ReadLine();
+                                            Console.WriteLine("Edad actual: " + term[3]);
+                                            Console.Write("Nueva edad: ");
+                                            string vEdad = ValidateInt();
+                                            Console.WriteLine("Ahorros actuales: " + term[4]);
+                                            Console.Write("Nuevo ahorro: ");
+                                            string vAhorros = VerificaAhorros();
+                                            Console.Write("Contraseña actual: ");
+                                            DigitoPassword(Convert.ToString(term[5]));
+                                            Console.WriteLine();
+                                            string vPassword = VerificaPassword();
+
+                                            while (B2 == false)
+                                            {
+                                                Console.WriteLine("¿Está seguro que desea guardar estos datos?");
+                                                Console.Write("Guardar(G), Descartar(D), Salir(S): ");
+                                                Opcion = Console.ReadLine().ToUpper();
+                                                if (Opcion == "G" || Opcion == "D" || Opcion == "S")
+                                                {
+                                                    B2 = true;
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("Introduzca un valor válido.");
+                                                    B2 = false;
+                                                }
+                                            }
+                                            switch (Opcion)
+                                            {
+                                                case "G":
+                                                    Datos(vCedula, vNombre, vApellido, vEdad, vAhorros, vPassword, @temp);
+                                                    Console.WriteLine();
+                                                    t = true;
+                                                    B2 = false;
+                                                    break;
+
+
+                                                case "D":
+
+                                                    B2 = false;
+                                                    Console.WriteLine();
+                                                    break;
+                                                case "S":
+                                                    t = true;
+                                                    B2 = true;
+                                                    break;
+                                            }
+                                        }
+                                        while (t == false);
+
+                                    }
+                                }
+                                File.Delete(@p);
+                                System.IO.File.Move(temp, p);
+                                Console.WriteLine("Sus Datos fueron guardado");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Esta cedula no se encuentra");
+                            }
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("Archivo no existe");
+                        }
+                        Console.WriteLine();
+                        break;
+
+
+                    case "5":
+                        Console.WriteLine("Digite un numero de cédula");
+                        bool eliminar = false;
+                        B4 = false;
+                        temp = "temp.txt";
+                        param = Console.ReadLine();
+                        do
+                        {
+                            Console.WriteLine("¿Desea eliminar el registro? (S/N)");
+                            Opcion = Console.ReadLine().ToUpper();
+                            if (Opcion == "S" || Opcion == "N")
+                            {
+                                B4 = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Esta cedula no se encuentra");
+                            }
+                        }
+                        while (B4 == false);
+                        switch (Opcion)
+                        {
+                            case "S":
+                                eliminar = true;
+                                break;
+
+                            case "N":
+                                eliminar = false;
+                                break;
+                        }
+                        if (eliminar == true)
+                        {
+                            if (!Directory.Exists(p))
+                            {
+                                if (validar(param, p) == true)
+                                {
+                                    string[] data = load(p);
+                                    foreach (string line in data)
+                                    {
+                                        string[] term = line.Split(',');
+                                        if (!(term[0] == param))
+                                        {
+                                            Datos(term[0], term[1], term[2], term[3], term[4], term[5], @temp);
+                                        }
+
+
+                                    }
+                                    File.Delete(@p);
+                                    System.IO.File.Move(temp, p);
+                                    Console.WriteLine("Borrado correctamente");
+                                    Console.WriteLine();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Esta cédula no se encuentra");
+                                }
+
+                            }
+                            else
+                            {
+                                Console.Error.WriteLine("Archivo no existe");
+                            }
+                        }
+
+                        break;
+                    case "6":
+                        Environment.Exit(0);
+                        break;
+                }
+
+            }
+            while (bo == false);
+
+        }
+
+           public static void Datos(string cedula, string nombre, string apellido, string edad,string ahorros, string pasword, string filepath)
+        {
+            try
+            {
+                if (!Directory.Exists(@filepath))
+                {
+                    using (StreamWriter writer = new StreamWriter(new FileStream(@filepath, FileMode.Append, FileAccess.Write)))
+                    {
+                        writer.WriteLine(cedula + "," + nombre + "," + apellido + "," + edad + "," + ahorros + "," + pasword);
+                    }
+                }
+                else
+                {
+                    using (StreamWriter writer = new StreamWriter(new FileStream(@filepath, FileMode.Create, FileAccess.Write)))
+                    {
+                        writer.WriteLine(cedula + "," + nombre + "," + apellido + "," + edad + "," + ahorros + "," + pasword);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Error: " + ex);
+                Environment.Exit(0);
+            }
+        }
+        public static string[] load(string filepath)
+        {
+            string[] lines = System.IO.File.ReadAllLines(@filepath);
+            return lines;
+        }
+        public static bool validar(string para, string filepath)
+        {
+            string[] data = System.IO.File.ReadAllLines(@filepath);
+            foreach (string line in data)
+            {
+                string[] term = line.Split(',');
+                if (term[0] == para)
+                {
+                    return true;
+                }
+            }
+            return false;
+
+
+        }
+        public static string ValidateInt()
+        {
+            bool r = true;
+            string k = "";
+            do
+            {
+                ConsoleKeyInfo key;
+
+                int i;
+                do
+                {
+                    key = Console.ReadKey(true);
+                    if (key.Key != ConsoleKey.Backspace)
+                    {
+                        bool x = int.TryParse(key.KeyChar.ToString(), out i);
+                        if (x)
+                        {
+
+                            k += key.KeyChar;
+                            Console.Write(key.KeyChar);
+                        }
+                    }
+                    else
+                    {
+                        if (key.Key == ConsoleKey.Backspace && k.Length > 0)
+                        {
+                            k = k.Substring(0, (k.Length - 1));
+                            Console.Write("\b \b");
+                        }
+                    }
+                }
+                while (key.Key != ConsoleKey.Enter);
+                if (k == "")
+                {
+                    Console.WriteLine("Digite un valor valido");
+                }
+                else
+                {
+                    r = false;
+                }
+            }
+            while (r == true);
+            Console.WriteLine();
+            return k;
+
+
+
+        }
+        public static string VerificaAhorros()
+        {
+            ConsoleKeyInfo key;
+            string ahorros = "";
+            decimal V1;
+            bool B1 = true;
+            do
+            {
+                do
+                {
+                    key = Console.ReadKey(true);
+                    if (key.Key != ConsoleKey.Backspace)
+                    {
+                        bool x = decimal.TryParse(key.KeyChar.ToString(), out V1);
+                        if (x)
+                        {
+                            ahorros += key.KeyChar;
+                            Console.Write(key.KeyChar);
+                        }
+                    }
+                    else
+                    {
+                        if (key.Key == ConsoleKey.Backspace && ahorros.Length > 0)
+                        {
+                            ahorros = ahorros.Substring(0, (ahorros.Length - 1));
+                            Console.Write("\b \b");
+                        }
+                    }
+                }
+                while (key.Key != ConsoleKey.Enter);
+                if (ahorros == "")
+                {
+                    Console.WriteLine("Digite un valor valido");
+                }
+                else
+                {
+                   B1  = false;
+                }
+            }
+            while (B1 == true);
+            Console.WriteLine();
+            return ahorros;
+
+
+        }
+
+        public static string VerificaPassword()
+        {
+            bool B1 = true;
+            bool B2 = true;
+            string password;
+            string paswrod2;
+            do
+            {
+                ConsoleKeyInfo key;
+                do
+                {
+                    B2 = true;
+                    password = "";
+                    paswrod2 = "";
+
+                    do
+                    {
+                        key = Console.ReadKey(true);
+                        if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                        {
+                            password += key.KeyChar;
+                            Console.Write("*");
+                        }
+                        else
+                        {
+                            if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                            {
+                                password = password.Substring(0, (password.Length - 1));
+                                Console.Write("\b \b");
+                            }
+                        }
+                    }
+                    while (key.Key != ConsoleKey.Enter);
+                    Console.WriteLine();
+                    Console.WriteLine("Confirme su contraseña");
+                    do
+                    {
+                        key = Console.ReadKey(true);
+                        if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                        {
+                            paswrod2 += key.KeyChar;
+                            Console.Write("*");
+                        }
+                        else
+                        {
+                            if (key.Key == ConsoleKey.Backspace && paswrod2.Length > 0)
+                            {
+                                paswrod2 = paswrod2.Substring(0, (paswrod2.Length - 1));
+                                Console.Write("\b \b");
+                            }
+                        }
+                    }
+                    while (key.Key != ConsoleKey.Enter);
+                    Console.WriteLine();
+                    if (password == paswrod2)
+                    {
+                        B1 = false;
+                        B2 = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Controle que su  contraseña sea la misma");
+                        B1 = true;
+                        B2 = false;
+                    }
+                }
+                while (B2 == true);
+            }
+            while (B1 == true);
+            Console.WriteLine();
+            return password;
+        }
+        public static void DigitoPassword(string i)
+        {
+            foreach (char x in i)
+            {
+                Console.Write("*");
+            }
+        }
+
+    }
+}
